@@ -51,7 +51,4 @@ class Listen:
             return f
 
         for x in cls._listener:
-            f = bind(x(), func)
-
-            # finally, call the function
-            f(*args, **kwargs)
+            bind(x(), func)(*args, **kwargs)
