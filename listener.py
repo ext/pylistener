@@ -20,32 +20,30 @@ class Listen:
     listeners = {}
 
     def __init__(self):
-        cls = Listen.find_observable(Listen, self.__class__)
-        
-        # don't add twice, may happen when using multiple inheritance
-        if self in [x() for x in cls._listener]:
-            return
-
-        cls._listener.append(weakref.ref(self))
+        for cls in Listen.find_observable(Listen, self.__class__):
+            # don't add twice, may happen when using multiple inheritance
+            if self in [x() for x in cls._listener]:
+                return
+            
+            cls._listener.append(weakref.ref(self))
 
     def __del__(self):
-        cls = Listen.find_observable(Listen, self.__class__)
-        cls._listener = [x for x in cls._listener if x() is not None]
+        for cls in Listen.find_observable(Listen, self.__class__):
+            cls._listener = [x for x in cls._listener if x() is not None]
 
     @staticmethod
     def find_observable(needle, cls):
         if cls is None:
-            return None
+            return
         
         if needle in cls.__bases__:
-            return cls
+            yield cls
 
         for x in cls.__bases__:
-            res = Listen.find_observable(needle, x) 
-            if res is not None:
-                return res
+            for y in Listen.find_observable(needle, x):
+                yield y
 
-        return None
+        return
     
     @staticmethod
     def _register_class(cls):
@@ -114,7 +112,7 @@ class ConcreteAB(ConcreteA, ConcreteB):
 d = ConcreteAB(2)
 
 ListenA.trigger(1, 2, foo=3)
-#ListenB.fred(1, 2, c=3)
+ListenB.fred(1, 2, c=3)
 
 #del a
 
