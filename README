@@ -7,9 +7,15 @@ Library for easy usage of observable pattern.
 >>>         raise NotImplementedError
 >>> 
 >>> class Sample(SampleListener):
->>>     def foo(self,a,b,c):
->>>         print a,b,c
+>>>     def __init__(self, name):
+>>>         SampleListener.__init__(self)
+>>>         self.name = name
 >>> 
->>> a = Sample()
+>>>     def foo(self,a,b,c):
+>>>         print self.name, a,b,c
+>>> 
+>>> a = Sample('fred')
+>>> b = Sample('barney')
 >>> SampleListener.foo(1,2,c=3)
-1 2 3
+fred 1 2 3
+barney 1 2 3
