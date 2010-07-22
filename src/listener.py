@@ -39,14 +39,19 @@ class Listen:
 
     @staticmethod # fake classmethod =)
     def _trigger(cls, func, args, kwargs):
-        for x in cls._listener:
+        def bind(inst, func):
             # search for the function in the derived class
-            f = getattr(x(), func.__name__)
+            f = getattr(inst, func.__name__)
 
             # if func isn't implemented in the derived class the original func
             # is bound and called.
             if f.__name__ is 'wrapper':
-                f = types.MethodType(func, x(), x().__class__)
+                f = types.MethodType(func, inst, inst.__class__)
+
+            return f
+
+        for x in cls._listener:
+            f = bind(x(), func)
 
             # finally, call the function
             f(*args, **kwargs)
