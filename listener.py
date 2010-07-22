@@ -106,15 +106,13 @@ class ConcreteAB(ConcreteA, ConcreteB):
     def fred(self, a,b,c):
         print 'ConcreteAB::fred', a,b,c
 
-#a = ConcreteA(1)
-#b = ConcreteB2()
-#c = ConcreteA(2)
-d = ConcreteAB(2)
+if __name__ == '__main__':
+    a = ConcreteA(1)
+    d = ConcreteAB(2)
 
-ListenA.trigger(1, 2, foo=3)
-ListenB.fred(1, 2, c=3)
+    ListenA.trigger(1, 2, foo=3)
+    ListenB.fred(1, 2, c=3)
+    
+    del a
 
-#del a
-
-#ListenA.trigger(1, 2, foo=3)
-
+    ListenA.trigger(1, 2, foo=3)
