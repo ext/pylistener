@@ -21,6 +21,11 @@ class Listen:
 
     def __init__(self):
         cls = Listen.find_observable(Listen, self.__class__)
+        
+        # don't add twice, may happen when using multiple inheritance
+        if self in [x() for x in cls._listener]:
+            return
+
         cls._listener.append(weakref.ref(self))
 
     def __del__(self):
